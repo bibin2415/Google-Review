@@ -11,16 +11,57 @@ android {
         applicationId "com.self.review"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 103
-        versionName "103"
+        versionCode 152
+        versionName "134.1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        debugConfig {
+            storeFile file('keystore/debug.keystore')
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+        releaseConfig {
+            storeFile file("keystore/self.keystore")
+            storePassword "Varghes@1441"
+            keyAlias "family"
+            keyPassword "Varghes@1441"
+        }
+    }
+
     buildTypes {
-        release {
+        debug {
+            debuggable true
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("boolean", "is_debuggable", "true")
+            signingConfig signingConfigs.debugConfig
+        }
+
+        release {
+            debuggable true
+            minifyEnabled false
+            buildConfigField("boolean", "is_debuggable", "true")
+            signingConfig signingConfigs.releaseConfig
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        qa {
+            dimension "version"
+            applicationIdSuffix = '.qa'
+            resValue "string", "app_name", "Google Review QA"
+            buildConfigField("boolean", "is_prod", "false")
+        }
+
+        prod {
+            dimension "version"
+            resValue "string", "app_name", "Google Review"
+            buildConfigField("boolean", "is_prod", "true")
         }
     }
     compileOptions {
